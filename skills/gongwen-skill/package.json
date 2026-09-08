@@ -1,0 +1,73 @@
+{
+  "name": "gongwen-skill",
+  "version": "2.12.0",
+  "description": "公文全流程处理工具 - GB/T 9704 格式检查/修复/内容优化/模板生成/版式注入",
+  "type": "module",
+  "main": "dsh/index.js",
+  "exports": {
+    ".": "./dsh/index.js",
+    "./dsh": "./dsh/index.js",
+    "./client": {
+      "default": "./dsh/client.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-settings-plugins"
+      ],
+      "platform": "web"
+    }
+  },
+  "keywords": [
+    "chinese",
+    "document",
+    "government",
+    "format",
+    "GB/T 9704",
+    "docx",
+    "official-document",
+    "dsh",
+    "deepseek-harness",
+    "skill",
+    "cordis",
+    "config-panel"
+  ],
+  "author": "Jose AI",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linhut/gongwen-skill.git"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4",
+    "@deepseek-ai/dsh-tools": ">=0.1.0",
+    "@deepseek-ai/schemastery": ">=3.18.0",
+    "@deepseek-ai/dsh-client-ui-settings-plugins": ">=0.1.2-rc.1"
+  },
+  "scripts": {
+    "prepack": "node scripts/clean-cache.js",
+    "bump": "node scripts/bump-version.js"
+  },
+  "files": [
+    "dsh/",
+    "engine/",
+    "gongwen/",
+    "rules/",
+    "prompts/",
+    "etc/",
+    "presets/",
+    "cordis.patch.yml",
+    "SKILL.md",
+    "pyproject.toml",
+    "requirements.txt",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+}

@@ -1,0 +1,16 @@
+# (c) 2026 Jose AI (https://www.linhut.cn)
+# https://github.com/linhut/gongwen-skill
+# Licensed under the MIT License. See the LICENSE file for details.
+
+include SKILL.md
+include CHANGELOG.md
+include LICENSE
+include requirements.txt
+recursive-include engine/ *.py
+recursive-include engine/ *.dotx
+recursive-include engine/ py.typed
+recursive-include rules/ *.yaml
+recursive-include prompts/ *.md
+recursive-include gongwen/ *.py
+recursive-include gongwen/ py.typed
+recursive-include etc/ *.json

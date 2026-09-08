@@ -1,0 +1,144 @@
+# (c) 2026 Jose AI (https://www.linhut.cn)
+# https://github.com/linhut/gongwen-skill
+# Licensed under the MIT License. See the LICENSE file for details.
+
+name: CI
+
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  pull_request:
+    branches: [master]
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+      - name: Run tests with coverage
+        if: hashFiles('tests/**') != ''
+        run: pytest tests/ -v --tb=short --cov=gongwen --cov=engine --cov-report=term-missing --cov-fail-under=20
+      - name: Skip notice (tests not synced)
+        if: hashFiles('tests/**') == ''
+        run: echo "tests/ not present (local-only per release policy); skipping test job"
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.10' }
+      - name: Install lint tools
+        run: pip install pycodestyle
+      - name: Check Python style
+        run: pycodestyle --max-line-length=120 --exclude=__pycache__,.git,dist,build .
+
+  doctor:
+    name: Self-Diagnosis
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.10' }
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Install fonts (simulate user install path)
+        run: python -m gongwen font install
+      - name: Run doctor self-diagnosis
+        run: |
+          python -m gongwen doctor --json 2>&1 | python -c "
+          import sys, json
+          d = json.load(sys.stdin)
+          print(f'Total: {d[\"summary\"][\"total\"]}, OK: {d[\"summary\"][\"ok\"]}, FAIL: {d[\"summary\"][\"failed\"]}')
+          if d['summary']['failed'] > 0:
+              for c in d['checks']:
+                  if not c['ok']:
+                      print(f'  FAIL: {c[\"name\"]} - {c.get(\"detail\", \"\")}')
+              sys.exit(1)
+          print('All checks passed')
+          "
+
+  publish:
+    name: Publish to PyPI
+    needs: [test, lint, doctor]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.10' }
+      - name: Build
+        run: |
+          pip install build
+          python -m build
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  publish-npm:
+    name: Publish to npm
+    needs: [test, lint, doctor]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+      - name: Publish to npmjs
+        run: |
+          # 幂等：版本已存在于 npmjs 时跳过（如 workflow_dispatch 补发 GitHub Packages 场景）
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if npm view gongwen-skill@${PKG_VERSION} version >/dev/null 2>&1; then
+            echo "gongwen-skill@${PKG_VERSION} 已存在于 npmjs，跳过"
+          else
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish to GitHub Packages
+        run: |
+          # GitHub Packages npm registry 只支持 scoped 包（官方规则）：
+          # 包名必须为 @owner/name 格式。临时改写包名为 @linhut/gongwen-skill 后再发布，
+          # 不影响已完成的 npmjs 步骤（npmjs 用原名 gongwen-skill）。
+          npm pkg set name="@linhut/gongwen-skill"
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          npm publish --registry=https://npm.pkg.github.com --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    name: Create GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [test, lint, doctor]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create Release (编号 = tag)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: gongwen-skill ${{ github.ref_name }}
+          generate_release_notes: true

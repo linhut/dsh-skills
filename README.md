@@ -14,6 +14,9 @@ A collection of practical skills for DeepSeek Harness (dsh).
 | `writing-skills` | 编写 / 编辑 / 验证新技能 / Create, edit, and verify skills |
 | `github-actions-docs` | GitHub Actions 工作流文档与排查 / Docs-grounded GitHub Actions guidance |
 | `how-it-works` | 解释内部机制（如 claude-mem 如何工作）/ Explain how internal mechanisms work |
+| `web-search` | 联网搜索（DuckDuckGo，零配置）：search 搜索 + fetch 网页正文 / Zero-config web search |
+| `gongwen-skill` | 公文全流程处理（GB/T 9704）：check / optimize / optimize-content / template / style-learn / md2docx / 版头版记页码注入 / Official Chinese document processing suite |
+| `ppt-studio` | PPT 全能工坊：PPTD DSL + JSON 双引擎生成原生 .pptx，20 套配色、18 个复合组件、Python-PPTX 高保真编译内核 / Native .pptx presentation studio (PPTD + JSON engines) |
 
 ## 安装 / Installation
 

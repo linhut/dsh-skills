@@ -1,0 +1,38 @@
+# (c) 2026 Jose AI (https://www.linhut.cn)
+# https://github.com/linhut/gongwen-skill
+# Licensed under the MIT License. See the LICENSE file for details.
+
+# npm 包排除清单
+# 注：.gitignore 已排除 __pycache__/ *.py[cod] tests/ .coverage *.tgz dist/ build/
+# 此文件仅排除 .gitignore 未覆盖但 npm 包不应包含的项
+
+# Python 缓存（npm 的 .gitignore 解析与 git 不完全一致，此处显式排除）
+**/__pycache__
+**/__pycache__/**
+*.pyc
+*.pyo
+
+# 开发/CI 相关
+.github/
+.gitattributes
+.gitignore
+.npmignore
+.codegraph/
+Makefile
+MANIFEST.in
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# 大文件/静态资源（npm 包不应包含，package.json files 字段已排除，此处显式保险）
+assets/
+logo/
+
+# 临时文件
+*.tmp
+*.log
+.pytest_cache/
+htmlcov/

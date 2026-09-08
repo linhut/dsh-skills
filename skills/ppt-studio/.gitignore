@@ -1,0 +1,13 @@
+*.pptx
+*.ppt
+*.png
+*.PNG
+*.jpg
+*.jpeg
+*.gif
+*.webp
+preview/
+imgs/
+__pycache__/
+*.pyc
+deck/deck.pptx

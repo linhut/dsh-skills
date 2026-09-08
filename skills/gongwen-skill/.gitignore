@@ -1,0 +1,67 @@
+# (c) 2026 Jose AI (https://www.linhut.cn)
+# https://github.com/linhut/gongwen-skill
+# Licensed under the MIT License. See the LICENSE file for details.
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# 运行时可写数据（用户/自定义规则、日志）
+.gongwen-skill/
+
+# 测试用例（仅本地保留，不推送远程仓库）
+tests/
+
+# 本地设计文档/方案/分析报告/发布流程说明（仅本地保留，不推送远程仓库）
+docs/design/
+docs/superpowers/
+RELEASE.md
+
+# 本地调研产物/临时脚本（仅本地保留，不推送远程仓库）
+.research/
+
+# DSH 技能注册副本（仅本机保留，不推送远程仓库；根 SKILL.md 已在仓库）
+.dsh/skills/
+
+# 测试与临时产物
+*_optimized.docx
+*_formatted.docx
+*_template.docx
+/tmp/
+*.tmp
+tmp_*
+engine/tmp.py
+.coverage.*
+engine/session.py
+engine/sessions/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Codegraph
+.codegraph/
+
+# Temp reports
+_report_*.md
+
+# npm packages
+*.tgz
+node_modules/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+pytest.ini
