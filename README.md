@@ -14,9 +14,6 @@ A collection of practical skills for DeepSeek Harness (dsh).
 | `writing-skills` | 编写 / 编辑 / 验证新技能 / Create, edit, and verify skills |
 | `github-actions-docs` | GitHub Actions 工作流文档与排查 / Docs-grounded GitHub Actions guidance |
 | `how-it-works` | 解释内部机制（如 claude-mem 如何工作）/ Explain how internal mechanisms work |
-| `web-search` | 联网搜索（DuckDuckGo，零配置）：search 搜索 + fetch 网页正文 / Zero-config web search |
-| `gongwen-skill` | 公文全流程处理（GB/T 9704）：check / optimize / optimize-content / template / style-learn / md2docx / 版头版记页码注入 / Official Chinese document processing suite |
-| `ppt-studio` | PPT 全能工坊：PPTD DSL + JSON 双引擎生成原生 .pptx，20 套配色、18 个复合组件、Python-PPTX 高保真编译内核 / Native .pptx presentation studio (PPTD + JSON engines) |
 
 ## 安装 / Installation
 
@@ -43,7 +40,7 @@ DSH 会在会话目录中展示技能名称，模型通过内置 `skill({ name }
 
 - 每个技能一个目录：`skills/<name>/SKILL.md`
 - `SKILL.md` 头部为 frontmatter：`name`（kebab-case，与目录名一致）、`description`（模型可见，用于触发）、可选 `disable-model-invocation` / `user-invocable`
-- 校验技能格式：`node scripts/validate-skills.mjs`
+- 校验技能格式：`node scripts/validate-skills.mjs`（或 `npm run validate`）
 
 ## 许可 / License
 

@@ -10,32 +10,10 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseFrontmatter } from './lib/frontmatter.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILLS_DIR = join(__dirname, 'skills');
-
-/**
- * 解析 SKILL.md frontmatter（简单 YAML 子集：name/description/disable-model-invocation/user-invocable）
- * @param {string} content - SKILL.md 全文
- * @returns {{ frontmatter: object, body: string }}
- */
-function parseFrontmatter(content) {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/.exec(content);
-  if (!match) return { frontmatter: {}, body: content };
-
-  const frontmatter = {};
-  for (const line of match[1].split(/\r?\n/)) {
-    const kv = /^([a-z-]+):\s*(.*)$/.exec(line.trim());
-    if (!kv) continue;
-    let value = kv[2].trim();
-    if (value === 'true') value = true;
-    else if (value === 'false') value = false;
-    else if (/^"?\d+"?$/.test(value)) value = Number(value.replace(/"/g, ''));
-    else value = value.replace(/^["']|["']$/g, '');
-    frontmatter[kv[1]] = value;
-  }
-  return { frontmatter, body: match[2].trim() };
-}
 
 /**
  * 读取 skills/ 下所有技能定义
@@ -65,6 +43,18 @@ function collectSkills() {
       disableModelInvocation: frontmatter['disable-model-invocation'] === true,
       userInvocable: frontmatter['user-invocable'] !== false,
     });
+  }
+
+  // 按名称排序，保证注册顺序跨平台确定
+  skills.sort((a, b) => a.name.localeCompare(b.name));
+
+  // 重名告警：后注册者会覆盖先注册者
+  const seen = new Set();
+  for (const skill of skills) {
+    if (seen.has(skill.name)) {
+      console.warn(`[dsh-skills] 检测到重名技能: ${skill.name}，后注册者将覆盖先注册者`);
+    }
+    seen.add(skill.name);
   }
 
   return skills;

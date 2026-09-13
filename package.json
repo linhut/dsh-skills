@@ -1,19 +1,19 @@
 {
   "name": "dsh-skills",
-  "version": "0.2.0",
-  "description": "实用技能合集 - brainstorming / using-superpowers / finishing-a-development-branch / writing-skills / github-actions-docs / how-it-works / web-search / gongwen-skill / ppt-studio",
+  "version": "0.1.0",
+  "description": "实用技能合集 - brainstorming / using-superpowers / finishing-a-development-branch / writing-skills / github-actions-docs / how-it-works",
   "type": "module",
   "main": "index.js",
+  "scripts": {
+    "validate": "node scripts/validate-skills.mjs"
+  },
   "keywords": [
     "dsh-plugin",
     "dsh",
     "skills",
     "deepseek-harness",
     "superpowers",
-    "brainstorming",
-    "web-search",
-    "gongwen",
-    "ppt"
+    "brainstorming"
   ],
   "license": "MIT",
   "dsh": {
